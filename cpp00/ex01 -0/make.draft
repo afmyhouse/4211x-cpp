@@ -1,0 +1,49 @@
+
+
+#_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_ FLAGS _/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_
+CFLAGS		= -Wall -Wextra -Werror -pedantic -std=c++98
+MKFLAGS		= --no-print-directory
+
+#_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_ FOLDERS _/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_
+DEPS			= includes
+SRCS			= sources
+_SUBFOLDERS		=
+VPATH			= $(SRCS) $(addprefix $(SRCS)/, $(_SUBFOLDERS))
+BINS			= bin
+
+#_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_ FILES _/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_
+NAME			= phonebook
+_FILES			= Contact PhoneBook main
+OBJS			= $(_FILES:%=%.o)
+TARGET			= $(addprefix $(BINS)/, $(OBJS))
+
+#_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_ RULES _/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_/=\_
+all: $(NAME)
+
+$(NAME): $(BINS) $(TARGET)
+	echo "[$(CYAN) Linking $(RESET)] $(GREEN)*$(RESET)"
+	$(CXX) $(CFLAGS) $(TARGET) -o $(NAME) -I $(DEPS)
+
+	echo "$(GREEN)Done.$(RESET)"
+
+$(BINS)/%.o : %.cpp
+	echo "[$(CYAN)Compiling$(RESET)] $(CFLAGS) $(GREEN)$<$(RESET)"
+	$(CXX) $(CFLAGS) -c $< -o $@ -I $(DEPS)
+
+$(BINS):
+	mkdir -p $(BINS)
+
+clean:
+	echo "[$(RED) Deleted $(RESET)] $(GREEN)$(BINS)$(RESET)"
+	$(RM) $(BINS)
+
+fclean: clean
+	echo "[$(RED) Deleted $(RESET)] $(GREEN)$(NAME)$(RESET)"
+	$(RM) $(NAME)
+
+re: fclean all
+
+run: re
+	./$(NAME)
+
+.SILENT:
